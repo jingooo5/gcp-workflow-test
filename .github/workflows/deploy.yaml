@@ -29,3 +29,4 @@ jobs:
           service: ${{ vars.SERVICE }}
           region: ${{ vars.REGION }}
           source: './' # 소스 코드 경로 (자동 빌드)
+          flags: '--allow-unauthenticated'
