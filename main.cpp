@@ -146,6 +146,7 @@ int main() {
     }
 
     std::cout << "Ping server listening on 0.0.0.0:" << kPort << "\n";
+    std::cout << "Try: curl 'http://127.0.0.1:" << kPort << "/ping?host=8.8.8.8'" << "\n";
 
     while (true) {
         sockaddr_in client_addr{};
@@ -174,6 +175,8 @@ int main() {
         std::string response;
         if (method != "GET") {
             response = http_response(400, json_error("Only GET supported"));
+        } else if (target == "/" || target == "/health" || target == "/healthz") {
+            response = http_response(200, "OK\n", "text/plain");
         } else if (target.rfind("/ping", 0) == 0) {
             auto host = extract_query_param(target, "host");
             std::string host_value = host.value_or("8.8.8.8");
