@@ -6,11 +6,6 @@ on:
       - main
   workflow_dispatch:
 
-
-env:
-  REGION: asia-northeast3
-  SERVICE: ping-server
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -28,16 +23,9 @@ jobs:
           workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
           service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
 
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
-
-      - name: Configure gcloud project
-        run: gcloud config set project "${{ secrets.GCP_PROJECT_ID }}"
-
       - name: Deploy to Cloud Run
-        run: |
-          gcloud run deploy "$SERVICE" \
-            --source . \
-            --region "$REGION" \
-            --platform managed \
-            --allow-unauthenticated
+        uses: google-github-actions/deploy-cloudrun@v3
+        with:
+          service: ${{ env.SERVICE }}
+          region: ${{ env.REGION }}
+          source: './' # 소스 코드 경로 (자동 빌드)
